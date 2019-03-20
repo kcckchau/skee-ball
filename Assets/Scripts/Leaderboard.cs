@@ -22,20 +22,17 @@ public class LeaderboardData
 	public List<LeaderboardItem> list;
 }
 
-public class Leaderboard : MonoBehaviour {
+public class Leaderboard {
 
 	public static Leaderboard instance;
 	public LeaderboardData data;
 	public string dataPath;
 
-	public Transform itemParent;
-	public LeaderboardUIItem itemPrefab;
-
 	// Use this for initialization
 	void Awake()
 	{
 		//dataPath = Path.Combine(Application.streamingAssetsPath, "leaderboard.dat");
-		dataPath = Path.Combine(Application.persistentDataPath, "leaderboard.dat");
+		/*
 		if (instance == null)
 		{
 			instance = this;
@@ -45,6 +42,7 @@ public class Leaderboard : MonoBehaviour {
 			Destroy(gameObject);
 			return;
 		}
+		*/
 	}
 
 	void Start () {
@@ -56,8 +54,11 @@ public class Leaderboard : MonoBehaviour {
 
 	}
 
-	public void Init()
+	public void Init(int level)
 	{
+		string fileName = string.Format("leaderboard{0}.dat", level);
+		dataPath = Path.Combine(Application.persistentDataPath, fileName);
+
 		BinaryFormatter formatter = new BinaryFormatter();
 		if (! System.IO.File.Exists(dataPath))
 		{
@@ -76,11 +77,6 @@ public class Leaderboard : MonoBehaviour {
 			data = formatter.Deserialize(stream) as LeaderboardData;
 			stream.Close();
 		}
-	}
-
-	public void GotoMainScene()
-	{
-		SceneManager.LoadScene(0);
 	}
 
 	public int NewEntry(LeaderboardItem newItem)
@@ -175,6 +171,7 @@ public class Leaderboard : MonoBehaviour {
 		stream.Close();
 	}
 
+/*
 	public void ShowData()
 	{
 		Debug.Log("TEST2 data list Count" + data.list.Count);
@@ -192,4 +189,5 @@ public class Leaderboard : MonoBehaviour {
 			index++;
 		}
 	}
+*/
 }

@@ -5,6 +5,11 @@ using UnityEngine;
 public class LeaderboardController : MonoBehaviour {
 
 	public static LeaderboardController instance;
+	public List<Leaderboard> leaderboardList;
+	int currIndex;
+
+	public Transform itemParent;
+	public LeaderboardUIItem itemPrefab;
 
 	// Use this for initialization
 	void Awake () {
@@ -17,13 +22,21 @@ public class LeaderboardController : MonoBehaviour {
 			Destroy(gameObject);
 			return;
 		}
-
 	}
 
 	void Start()
 	{
-		Leaderboard.instance.Init();
-		Leaderboard.instance.ShowData();
+		leaderboardList = new List<Leaderboard>();
+
+		for (int i = 0; i < 3; ++i)
+		{
+			Leaderboard item = new Leaderboard();
+			item.Init(i);
+			leaderboardList.Add(item);
+		}
+
+		ShowData();
+		//leaderboardList[0].instance.ShowData();
 	}
 
 	// Update is called once per frame
@@ -42,13 +55,40 @@ public class LeaderboardController : MonoBehaviour {
 		newItem.dateTime = System.DateTime.Now;
 		Debug.Log("TEST2 " + newItem.score);
 		newItem.name = "TEST";
-		Leaderboard.instance.NewEntry(newItem);
-		Leaderboard.instance.ShowData();
+		leaderboardList[currIndex].NewEntry(newItem);
+		ShowData();
 
 	}
 
-	public void GetScoreList()
+	public void GotoMainMenu()
+	{
+		SceneController.GotoMainScene();
+	}
+
+	public void prevLeaderboard()
 	{
 
+	}
+
+	public void nextLeaderboard()
+	{
+
+	}
+
+	public void ShowData()
+	{
+		foreach (Transform child in itemParent)
+		{
+			Destroy(child.gameObject);
+		}
+		int index = 1;
+		foreach (LeaderboardItem item in leaderboardList[currIndex].data.list)
+		{
+			LeaderboardUIItem uiItem = GameObject.Instantiate(itemPrefab, transform.position, Quaternion.identity);
+			if (itemParent)
+				uiItem.transform.SetParent(itemParent, false);
+			uiItem.SetValue(index, item);
+			index++;
+		}
 	}
 }

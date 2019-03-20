@@ -18,6 +18,7 @@ public class GameController : MonoBehaviour {
 	public GameOverMenu gameOverMenu;
 	public PowerBar powerBar;
 	public Shooter shooter;
+
 	public Text pregame_countDownText;
 
 	public float pregame_countDownValue;
@@ -39,8 +40,17 @@ public class GameController : MonoBehaviour {
 	public GameObject inputFieldObj;
 	public InputField inputField;
 
+	public GameConfiguration level2Config;
+	public GameConfiguration level3Config;
 	public GameConfiguration gameConfiguration;
+	public Transform scorePointsParent;
+	public ScorePoint scorePointOPrefab;
+	public ScorePoint scorePointBigOPrefab;
+	public ScorePoint scorePointUPrefab;
+
 	public State state;
+
+	Leaderboard leaderboard;
 
 	// Use this for initialization
 	void Awake ()
@@ -64,30 +74,85 @@ public class GameController : MonoBehaviour {
 		pregame_countDown = pregame_countDownValue;
 		game_countDown = game_countDownValue;
 
+		if (ApplicationModel.currentLevel == 2)
+			gameConfiguration = level2Config;
+		else if (ApplicationModel.currentLevel == 3)
+			gameConfiguration = level3Config;
+
 		if (gameConfiguration != null)
 		{
 			pregame_countDown = gameConfiguration.pregame_countDown;
 			game_countDown = gameConfiguration.game_countDown;
 		}
+
 		pregame_countDownText.text = pregame_countDown.ToString("0.0");
 		game_countDownText.text = game_countDown.ToString("0.0");
 
-		/*
-		inputField.OnFocus.AddListener(delegate {
-			TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, true);
-		});
-		*/
-
 		if (inputFieldObj)
 			inputFieldObj.SetActive(true);
-		//TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, true);
+
+		TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, true);
 
 		GenerateNewBall();
 	}
 
 	void Start()
 	{
-		Leaderboard.instance.Init();
+		Debug.Log("currentLevel " + ApplicationModel.currentLevel);
+		leaderboard = new Leaderboard();
+		//Leaderboard.instance.Init(ApplicationModel.currentLevel);
+		leaderboard.Init(ApplicationModel.currentLevel);
+
+		if (gameConfiguration != null)
+		{
+			if (scorePointsParent)
+			{
+				foreach (Transform xform in scorePointsParent)
+				{
+					Destroy(xform.gameObject);
+				}
+
+				List<ScorePointItem> list = gameConfiguration.scorePointList;
+				foreach (ScorePointItem item in list)
+				{
+					ScorePoint point = null;
+					switch (item.type)
+					{
+						case ScorePointType.TYPE_O:
+						{
+							if (scorePointOPrefab)
+								point = GameObject.Instantiate(scorePointOPrefab, new Vector3(item.x, item.y, item.z), Quaternion.identity) as ScorePoint;
+							break;
+						}
+						case ScorePointType.TYPE_BIG_O:
+						{
+							if (scorePointBigOPrefab)
+								point = GameObject.Instantiate(scorePointBigOPrefab, new Vector3(item.x, item.y, item.z), Quaternion.identity) as ScorePoint;
+							break;
+						}
+						case ScorePointType.TYPE_U:
+						{
+							if (scorePointUPrefab)
+								point = GameObject.Instantiate(scorePointUPrefab, new Vector3(item.x, item.y, item.z), Quaternion.Euler(90,0,0)) as ScorePoint;
+							break;
+						}
+						default:
+						{
+							if (scorePointOPrefab)
+								point = GameObject.Instantiate(scorePointOPrefab, new Vector3(item.x, item.y, item.z), Quaternion.identity) as ScorePoint;
+							break;
+						}
+					}
+					if (point)
+					{
+						point.transform.SetParent(scorePointsParent, false);
+						point.SetScore(item.score);
+					}
+
+				}
+			}
+
+		}
 	}
 
 	// Update is called once per frame
@@ -122,7 +187,7 @@ public class GameController : MonoBehaviour {
 						item.score = game_score;
 						item.name = player_name;
 						item.dateTime = System.DateTime.Now;
-						int pos = Leaderboard.instance.NewEntry(item);
+						int pos = leaderboard.NewEntry(item);
 						item.pos = pos;
 						gameOverMenu.Show(item);
 					}

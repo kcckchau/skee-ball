@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class MainController : MonoBehaviour {
 
+	public GameObject levelSelectMenu;
+
 	// Use this for initialization
 	void Start () {
 
@@ -18,13 +20,20 @@ public class MainController : MonoBehaviour {
 		}
 	}
 
+	public void ShowLevelSelectMenu()
+	{
+		if (levelSelectMenu)
+			levelSelectMenu.SetActive(true);
+	}
+
 	public void GotoLeaderboard()
 	{
 		SceneController.GotoLeaderboard();
 	}
 
-	public void GotoGameLevel()
+	public void GotoGameLevel(int level)
 	{
+		ApplicationModel.currentLevel = level;
 		SceneController.GotoGameScene();
 	}
 

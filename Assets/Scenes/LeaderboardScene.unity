@@ -189,7 +189,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1831780605}
+      - m_Target: {fileID: 1096800996}
         m_MethodName: NewEntryTest
         m_Mode: 1
         m_Arguments:
@@ -479,7 +479,7 @@ GameObject:
   - component: {fileID: 1096800997}
   - component: {fileID: 1096800996}
   m_Layer: 5
-  m_Name: Leaderboard
+  m_Name: LeaderboardController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -493,13 +493,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1096800995}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9dea7761440a6ca4cbd50f83d4a67bae, type: 3}
+  m_Script: {fileID: 11500000, guid: f1e62470b1df7224eb3ac9a312d0eb51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data:
-    version: 
-    list: []
-  dataPath: 
   itemParent: {fileID: 1465443687}
   itemPrefab: {fileID: 114854768676387286, guid: b6ab8e8025c844a4395a7380bd217a40,
     type: 2}
@@ -890,7 +886,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1831780605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -902,6 +898,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1e62470b1df7224eb3ac9a312d0eb51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemParent: {fileID: 1465443687}
+  itemPrefab: {fileID: 114854768676387286, guid: b6ab8e8025c844a4395a7380bd217a40,
+    type: 2}
 --- !u!4 &1831780606
 Transform:
   m_ObjectHideFlags: 0
@@ -992,7 +991,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1096800996}
-        m_MethodName: GotoMainScene
+        m_MethodName: GotoMainMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
