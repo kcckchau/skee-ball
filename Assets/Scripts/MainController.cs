@@ -12,17 +12,20 @@ public class MainController : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-
+		if (Input.GetKeyDown(KeyCode.Escape))
+		{
+			Application.Quit();
+		}
 	}
 
 	public void GotoLeaderboard()
 	{
-		SceneManager.LoadScene(1);
+		SceneController.GotoLeaderboard();
 	}
 
 	public void GotoGameLevel()
 	{
-		SceneManager.LoadScene(2);
+		SceneController.GotoGameScene();
 	}
 
 }
