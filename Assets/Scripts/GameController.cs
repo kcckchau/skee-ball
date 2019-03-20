@@ -8,6 +8,7 @@ public class GameController : MonoBehaviour {
 
 	public enum State
 	{
+		INPUT_NAME,
 		COUNT_DOWN,
 		GAME_STARTED,
 		GAME_OVER
@@ -29,10 +30,16 @@ public class GameController : MonoBehaviour {
 	public Text bonusText;
 
 	DateTime dateTime;
+	public Text player_nameText;
 	string player_name;
+
 	int game_score;
 	public Text game_scoreText;
 
+	public GameObject inputFieldObj;
+	public InputField inputField;
+
+	public GameConfiguration gameConfiguration;
 	public State state;
 
 	// Use this for initialization
@@ -55,9 +62,26 @@ public class GameController : MonoBehaviour {
 			shooter.onReadyToGenerateNewBall += OnReadyToGenerateNewBall;
 
 		pregame_countDown = pregame_countDownValue;
-		pregame_countDownText.text = pregame_countDown.ToString("0.0");
 		game_countDown = game_countDownValue;
+
+		if (gameConfiguration != null)
+		{
+			pregame_countDown = gameConfiguration.pregame_countDown;
+			game_countDown = gameConfiguration.game_countDown;
+		}
+		pregame_countDownText.text = pregame_countDown.ToString("0.0");
 		game_countDownText.text = game_countDown.ToString("0.0");
+
+		/*
+		inputField.OnFocus.AddListener(delegate {
+			TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, true);
+		});
+		*/
+
+		if (inputFieldObj)
+			inputFieldObj.SetActive(true);
+		//TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, true);
+
 		GenerateNewBall();
 	}
 
@@ -70,6 +94,10 @@ public class GameController : MonoBehaviour {
 	void Update () {
 		switch (state)
 		{
+			case State.INPUT_NAME:
+			{
+				break;
+			}
 			case State.COUNT_DOWN:
 			{
 				pregame_countDown -= Time.deltaTime;
@@ -154,5 +182,22 @@ public class GameController : MonoBehaviour {
 	public void UpdateBallBonus(int bonus)
 	{
 			bonusText.text = bonus.ToString();
+	}
+
+	public void SetPlayerName(InputField input)
+	{
+		if (input.text.Length > 10)
+			player_name = input.text.Substring(0, 10);
+		else if (input.text.Length > 0 && input.text.Length <= 10)
+			player_name = input.text;
+		else
+			player_name = "Player";
+
+		if (player_nameText)
+			player_nameText.text = player_name;
+		state = State.COUNT_DOWN;
+
+		if (inputFieldObj)
+			inputFieldObj.SetActive(false);
 	}
 }

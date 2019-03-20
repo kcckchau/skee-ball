@@ -28,6 +28,11 @@ public class ScoreHole : MonoBehaviour {
 
 	public void OnTriggerEnter(Collider collider)
 	{
+		if (GameController.instance.state == GameController.State.COUNT_DOWN ||
+		GameController.instance.state == GameController.State.GAME_OVER)
+		{
+			return;
+		}
 		Debug.Log("OnTriggerEnter");
 		if (collider.CompareTag("ball"))
 		{

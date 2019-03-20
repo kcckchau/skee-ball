@@ -42,7 +42,7 @@ public class Ball : MonoBehaviour {
 
 		Renderer r = GetComponent<Renderer>();
 
-		countDown = 10f;
+		countDown = 5f;
 		//mass_ll = 0.65f;
 		//mass_ul = 1.35f;
 		mass_ll = 0.8f;

@@ -43,7 +43,8 @@ public class InputController : MonoBehaviour {
 			SceneController.GotoMainScene();
 		}
 
-		if (GameController.instance.state == GameController.State.COUNT_DOWN ||
+		if (GameController.instance.state == GameController.State.INPUT_NAME ||
+		GameController.instance.state == GameController.State.COUNT_DOWN ||
 		GameController.instance.state == GameController.State.GAME_OVER)
 			return;
 
