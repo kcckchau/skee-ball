@@ -15,7 +15,7 @@ public class InputController : MonoBehaviour {
 
 	public static InputController instance;
 
-	public float timeToMax = 1.5f;
+	public float timeToMax;
 	float power;
 	int direction = 1;
 	State state;
@@ -33,11 +33,18 @@ public class InputController : MonoBehaviour {
 		}
 
 		state = State.READY;
+		timeToMax = 1.5f;
 	}
 
 	// Update is called once per frame
 	void Update () {
-		if (GameController.instance.state == GameController.State.COUNT_DOWN)
+		if (Input.GetKeyDown(KeyCode.Escape))
+		{
+			SceneController.GotoMainScene();
+		}
+
+		if (GameController.instance.state == GameController.State.COUNT_DOWN ||
+		GameController.instance.state == GameController.State.GAME_OVER)
 			return;
 
 		Touch[] touches = Input.touches;
@@ -89,26 +96,26 @@ public class InputController : MonoBehaviour {
 					{
 						if (power < 0f)
 						{
-						 	direction = 1;
+							direction = 1;
 						}
 						else if (power > 1.0f)
 						{
 							direction = -1;
 						}
 
-						 power += 1.0f * (Time.deltaTime / timeToMax) * direction;
-						 GameController.instance.UpdatePowerBar(power);
+						power += 1.0f * (Time.deltaTime / timeToMax + power * 0.1f) * direction;
+						GameController.instance.UpdatePowerBar(power);
 
-						 Camera cam = Camera.main;
-						 Ray ray = cam.ScreenPointToRay(touch.position);
-						 RaycastHit rayCast;
-						 if(Physics.Raycast(ray.origin, ray.direction, out rayCast, 100))
-						 {
-							 float newX = rayCast.point.x;
-							 GameController.instance.UpdateBallPositionX(newX);
-						 }
+						Camera cam = Camera.main;
+						Ray ray = cam.ScreenPointToRay(touch.position);
+						RaycastHit rayCast;
+						if(Physics.Raycast(ray.origin, ray.direction, out rayCast, 100))
+						{
+							float newX = rayCast.point.x;
+							GameController.instance.UpdateBallPositionX(newX);
+						}
 
-						 break;
+						break;
 					 }
 					 case TouchPhase.Ended:
 					 case TouchPhase.Canceled:
@@ -134,4 +141,5 @@ public class InputController : MonoBehaviour {
 		Debug.Log(this + "TEST Ready");
 		state = State.READY;
 	}
+
 }

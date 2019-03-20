@@ -19,9 +19,13 @@ public class Ball : MonoBehaviour {
 	public delegate void StateChangeDelegate(Ball ball, Ball.State state);
 	public event StateChangeDelegate onStateChange;
 
-	Rigidbody rb;
+	public float mass_ul; // upper limit
+	public float mass_ll; // lower limit
+	public float up;
+
 	public int bonus;
 
+	Rigidbody rb;
 	float countDown;
 	bool m_isShooted;
 	bool m_notifyGameController;
@@ -31,8 +35,28 @@ public class Ball : MonoBehaviour {
 	void Start () {
 		rb = GetComponent<Rigidbody>();
 		if (rb == null)
+		{
 			Debug.LogError(this + " Rigidbody not exist");
+			return;
+		}
+
+		Renderer r = GetComponent<Renderer>();
+
 		countDown = 10f;
+		//mass_ll = 0.65f;
+		//mass_ul = 1.35f;
+		mass_ll = 0.8f;
+		mass_ul = 1.2f;
+		float value = Random.Range(mass_ll, mass_ul) * 0.75f;
+		transform.localScale = new Vector3(value, value, value);
+		rb.mass = value;
+		if (r)
+		{
+			float percent = (value - mass_ll) / (mass_ul - mass_ll);
+			r.material.color = new Color(0, 0, percent * 255);
+		}
+		bonus = (int)Mathf.Ceil(Random.Range(0f, 15f));
+		GameController.instance.UpdateBallBonus(bonus);
 	}
 
 	void Update ()
@@ -100,8 +124,12 @@ public class Ball : MonoBehaviour {
 			return;
 
 		state = State.MOVING;
-		rb.AddForce(transform.forward * power * 10 * 350);
-		rb.AddForce(transform.up * power * 10 * 75);
+		power += 0.5f;
+		rb.AddForce(transform.forward * 2700);
+		rb.AddForce(transform.up * power * 850);
+
+		//rb.AddForce(transform.forward * power * 800);
+		//rb.AddForce(transform.up * power * 750);
 	}
 
 	public void UpdatePositionX(float newX)

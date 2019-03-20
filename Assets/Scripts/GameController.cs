@@ -1,3 +1,4 @@
+using System;
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,7 +26,11 @@ public class GameController : MonoBehaviour {
 	public Text game_countDownText;
 	float game_countDown;
 
-	public float game_score;
+	public Text bonusText;
+
+	DateTime dateTime;
+	string player_name;
+	int game_score;
 	public Text game_scoreText;
 
 	public State state;
@@ -56,6 +61,11 @@ public class GameController : MonoBehaviour {
 		GenerateNewBall();
 	}
 
+	void Start()
+	{
+		Leaderboard.instance.Init();
+	}
+
 	// Update is called once per frame
 	void Update () {
 		switch (state)
@@ -78,6 +88,16 @@ public class GameController : MonoBehaviour {
 				if (game_countDown < 0f)
 				{
 					state = State.GAME_OVER;
+					if (gameOverMenu)
+					{
+						LeaderboardItem item = new LeaderboardItem();
+						item.score = game_score;
+						item.name = player_name;
+						item.dateTime = System.DateTime.Now;
+						int pos = Leaderboard.instance.NewEntry(item);
+						item.pos = pos;
+						gameOverMenu.Show(item);
+					}
 					return;
 				}
 				game_countDownText.text = game_countDown.ToString("0.0");
@@ -85,8 +105,6 @@ public class GameController : MonoBehaviour {
 			}
 			case State.GAME_OVER:
 			{
-				if (gameOverMenu)
-					gameOverMenu.Show();
 				break;
 			}
 		}
@@ -103,8 +121,7 @@ public class GameController : MonoBehaviour {
 	{
 		if (shooter)
 		{
-			Ball ball = shooter.GenerateNewBall();
-
+			shooter.GenerateNewBall();
 		}
 	}
 
@@ -132,5 +149,10 @@ public class GameController : MonoBehaviour {
 		game_score += score;
 		if (game_scoreText)
 			game_scoreText.text = game_score.ToString();
+	}
+
+	public void UpdateBallBonus(int bonus)
+	{
+			bonusText.text = bonus.ToString();
 	}
 }

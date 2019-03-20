@@ -5,7 +5,6 @@ using UnityEngine;
 public class LeaderboardController : MonoBehaviour {
 
 	public static LeaderboardController instance;
-	public LeaderboardData data;
 
 	// Use this for initialization
 	void Awake () {
@@ -19,18 +18,33 @@ public class LeaderboardController : MonoBehaviour {
 			return;
 		}
 
-		DontDestroyOnLoad(gameObject);
+	}
+
+	void Start()
+	{
+		Leaderboard.instance.Init();
+		Leaderboard.instance.ShowData();
 	}
 
 	// Update is called once per frame
 	void Update () {
-
+		if (Input.GetKeyDown(KeyCode.Escape))
+		{
+			SceneController.GotoMainScene();
+		}
 	}
 
 	// return position
-	public int NewScore(LeaderboardItem item)
+	public void NewEntryTest()
 	{
-		return 1;
+		LeaderboardItem newItem = new LeaderboardItem();
+		newItem.score = Random.Range(20, 100);
+		newItem.dateTime = System.DateTime.Now;
+		Debug.Log("TEST2 " + newItem.score);
+		newItem.name = "TEST";
+		Leaderboard.instance.NewEntry(newItem);
+		Leaderboard.instance.ShowData();
+
 	}
 
 	public void GetScoreList()
