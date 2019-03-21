@@ -26,5 +26,6 @@ public class GameConfiguration : ScriptableObject {
 	[Header("Game")]
 	public int pregame_countDown;
 	public int game_countDown;
+	public float time_to_reach_max;
 	public List<ScorePointItem> scorePointList;
 }

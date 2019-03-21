@@ -62,7 +62,7 @@ public class Leaderboard {
 		BinaryFormatter formatter = new BinaryFormatter();
 		if (! System.IO.File.Exists(dataPath))
 		{
-			Debug.Log("TEST2 SaveData not exist, create a new one");
+			Debug.Log("SaveData not exist, create a new one");
 			LeaderboardData newData = new LeaderboardData();
 			newData.list = new List<LeaderboardItem>();
 			FileStream stream = new FileStream(dataPath, FileMode.Create);
@@ -72,7 +72,7 @@ public class Leaderboard {
 		}
 		else
 		{
-			Debug.Log("TEST2 Load data");
+			Debug.Log("Load data");
 			FileStream stream = new FileStream(dataPath, FileMode.Open);
 			data = formatter.Deserialize(stream) as LeaderboardData;
 			stream.Close();
@@ -174,7 +174,7 @@ public class Leaderboard {
 /*
 	public void ShowData()
 	{
-		Debug.Log("TEST2 data list Count" + data.list.Count);
+		Debug.Log("data list Count" + data.list.Count);
 		foreach (Transform child in itemParent)
 		{
 			Destroy(child.gameObject);

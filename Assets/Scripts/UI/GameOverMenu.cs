@@ -9,8 +9,8 @@ public class GameOverMenu : MonoBehaviour {
 	public Text descriptionText;
 	public Text posText;
 	public Text scoreText;
-	public Button back;
-	public Button retry;
+	public GameObject secondObject;
+	public GameObject back;
 
 	// Use this for initialization
 	void Start () {
@@ -28,26 +28,28 @@ public class GameOverMenu : MonoBehaviour {
 			posText.text = (item.pos + 1).ToString();
 		if (scoreText)
 			scoreText.text = item.score.ToString();
-		if (back)
-			back.gameObject.SetActive(true);
+
 		if (item.pos == 0)
 		{
 			if (descriptionText)
 				descriptionText.text = "Amazing! You got the highest score!";
+			if (back)
+				back.SetActive(true);
 		}
 		else if (item.pos > 0 && item.pos < 5)
 		{
 			if (descriptionText)
 				descriptionText.text = "Amazing! You got the highest score!";
-			if (retry)
-				retry.gameObject.SetActive(true);
+
+			if (secondObject)
+				secondObject.SetActive(true);
 		}
 		else
 		{
 			if (descriptionText)
 				descriptionText.text = "Your score is low. Try again";
-			if (retry)
-				retry.gameObject.SetActive(true);
+			if (secondObject)
+				secondObject.SetActive(true);
 		}
 
 		gameObject.SetActive(true);

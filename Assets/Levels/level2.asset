@@ -11,8 +11,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b278932952e47a46a80824c5f83d07a, type: 3}
   m_Name: level2
   m_EditorClassIdentifier: 
-  pregame_countDown: 4
-  game_countDown: 35
+  pregame_countDown: 3
+  game_countDown: 25
+  time_to_reach_max: 0.5
   scorePointList:
   - type: 0
     x: -3
@@ -21,8 +22,8 @@ MonoBehaviour:
     score: 120
   - type: 0
     x: 0
-    y: 1
-    z: 4.2
+    y: 0.9
+    z: 5
     score: 60
   - type: 0
     x: 3

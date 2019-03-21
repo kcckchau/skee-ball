@@ -1,15 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LeaderboardController : MonoBehaviour {
 
 	public static LeaderboardController instance;
 	public List<Leaderboard> leaderboardList;
-	int currIndex;
+	int m_currIndex;
 
 	public Transform itemParent;
 	public LeaderboardUIItem itemPrefab;
+	public Text leaderboardTitleText;
 
 	// Use this for initialization
 	void Awake () {
@@ -36,6 +38,7 @@ public class LeaderboardController : MonoBehaviour {
 		}
 
 		ShowData();
+		UpdateLeaderboardTitleText();
 		//leaderboardList[0].instance.ShowData();
 	}
 
@@ -53,9 +56,8 @@ public class LeaderboardController : MonoBehaviour {
 		LeaderboardItem newItem = new LeaderboardItem();
 		newItem.score = Random.Range(20, 100);
 		newItem.dateTime = System.DateTime.Now;
-		Debug.Log("TEST2 " + newItem.score);
-		newItem.name = "TEST";
-		leaderboardList[currIndex].NewEntry(newItem);
+		newItem.name = "Player";
+		leaderboardList[m_currIndex].NewEntry(newItem);
 		ShowData();
 
 	}
@@ -65,14 +67,18 @@ public class LeaderboardController : MonoBehaviour {
 		SceneController.GotoMainScene();
 	}
 
-	public void prevLeaderboard()
+	public void PrevLeaderboard()
 	{
 
 	}
 
-	public void nextLeaderboard()
+	public void NextLeaderboard()
 	{
-
+		m_currIndex++;
+		m_currIndex %= 3;
+		Debug.Log("Next leader board: " + m_currIndex);
+		UpdateLeaderboardTitleText();
+		ShowData();
 	}
 
 	public void ShowData()
@@ -82,13 +88,40 @@ public class LeaderboardController : MonoBehaviour {
 			Destroy(child.gameObject);
 		}
 		int index = 1;
-		foreach (LeaderboardItem item in leaderboardList[currIndex].data.list)
+		Debug.Log("curr index" + m_currIndex);
+		if (leaderboardList[m_currIndex] != null)
 		{
-			LeaderboardUIItem uiItem = GameObject.Instantiate(itemPrefab, transform.position, Quaternion.identity);
-			if (itemParent)
-				uiItem.transform.SetParent(itemParent, false);
-			uiItem.SetValue(index, item);
-			index++;
+			foreach (LeaderboardItem item in leaderboardList[m_currIndex].data.list)
+			{
+				LeaderboardUIItem uiItem = GameObject.Instantiate(itemPrefab, transform.position, Quaternion.identity);
+				if (itemParent)
+					uiItem.transform.SetParent(itemParent, false);
+				uiItem.SetValue(index, item);
+				index++;
+			}
+		}
+	}
+
+	void UpdateLeaderboardTitleText()
+	{
+		if (leaderboardTitleText)
+		{
+			leaderboardTitleText.text = "Leaderboard " + (m_currIndex + 1).ToString();
+		}
+	}
+
+	public void Reset()
+	{
+		foreach (Leaderboard item in leaderboardList)
+		{
+			if (item != null)
+			{
+				item.Reset();
+			}
+			else
+			{
+				Debug.Log("Item is null");
+			}
 		}
 	}
 }

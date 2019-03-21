@@ -19,6 +19,7 @@ public class GameController : MonoBehaviour {
 	public PowerBar powerBar;
 	public Shooter shooter;
 
+	public Text gameLevelText;
 	public Text pregame_countDownText;
 
 	public float pregame_countDownValue;
@@ -27,6 +28,7 @@ public class GameController : MonoBehaviour {
 	public float game_countDownValue;
 	public Text game_countDownText;
 	float game_countDown;
+	float time_to_reach_max = 0.75f;
 
 	public Text bonusText;
 
@@ -74,24 +76,31 @@ public class GameController : MonoBehaviour {
 		pregame_countDown = pregame_countDownValue;
 		game_countDown = game_countDownValue;
 
-		if (ApplicationModel.currentLevel == 2)
+		if (ApplicationModel.currentLevel == 1)
 			gameConfiguration = level2Config;
-		else if (ApplicationModel.currentLevel == 3)
+		else if (ApplicationModel.currentLevel == 2)
 			gameConfiguration = level3Config;
+
+		if (gameLevelText)
+			gameLevelText.text = (ApplicationModel.currentLevel + 1).ToString();
 
 		if (gameConfiguration != null)
 		{
 			pregame_countDown = gameConfiguration.pregame_countDown;
 			game_countDown = gameConfiguration.game_countDown;
+			time_to_reach_max = gameConfiguration.time_to_reach_max;
 		}
 
 		pregame_countDownText.text = pregame_countDown.ToString("0.0");
 		game_countDownText.text = game_countDown.ToString("0.0");
 
-		if (inputFieldObj)
+		if (inputFieldObj){
 			inputFieldObj.SetActive(true);
+			if (inputField)
+				inputField.Select();
+		}
 
-		TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, true);
+		//TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, true);
 
 		GenerateNewBall();
 	}
@@ -99,10 +108,10 @@ public class GameController : MonoBehaviour {
 	void Start()
 	{
 		Debug.Log("currentLevel " + ApplicationModel.currentLevel);
+		InputController.instance.SetTimeToReachMax(time_to_reach_max);
 		leaderboard = new Leaderboard();
 		//Leaderboard.instance.Init(ApplicationModel.currentLevel);
 		leaderboard.Init(ApplicationModel.currentLevel);
-
 		if (gameConfiguration != null)
 		{
 			if (scorePointsParent)
@@ -232,7 +241,7 @@ public class GameController : MonoBehaviour {
 
 	public void Shoot(float power)
 	{
-		Debug.Log("TEST Shoot with Power" + power);
+		Debug.Log("Shoot with Power" + power);
 		if (shooter)
 			shooter.Fire(power);
 	}
@@ -251,12 +260,18 @@ public class GameController : MonoBehaviour {
 
 	public void SetPlayerName(InputField input)
 	{
-		if (input.text.Length > 10)
-			player_name = input.text.Substring(0, 10);
-		else if (input.text.Length > 0 && input.text.Length <= 10)
-			player_name = input.text;
-		else
-			player_name = "Player";
+		if (input.text.Length == 0)
+		{
+			if (input.placeholder)
+			{
+				Text tmpText = input.placeholder.GetComponent<Text>();
+				if (tmpText)
+					tmpText.text = "Name must be at least 1 character";
+			}
+			return;
+		}
+
+		player_name = input.text;
 
 		if (player_nameText)
 			player_nameText.text = player_name;
@@ -265,4 +280,5 @@ public class GameController : MonoBehaviour {
 		if (inputFieldObj)
 			inputFieldObj.SetActive(false);
 	}
+
 }
